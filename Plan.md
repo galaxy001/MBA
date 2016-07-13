@@ -28,6 +28,7 @@
 ## Details
 
 * NCBI Taxonomy 的各级节点具有的表型的 tag，可以通过对 PubMed 进行 text mining 得到。相关技术在 IT 领域很常见。
+  * 肯定有现成的数据库，寻找之。 
 * 每类功能内的比对的 hit，可以参考 BLAST 给出 [Expect (E) value](http://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ#expect)。
 
 ## Flow

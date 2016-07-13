@@ -30,6 +30,21 @@
 * NCBI Taxonomy 的各级节点具有的表型的 tag，可以通过对 PubMed 进行 text mining 得到。相关技术在 IT 领域很常见。
 * 每类功能内的比对的 hit，可以参考 BLAST 给出 [Expect (E) value](http://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ#expect)。
 
+## Flow
+
+````
+Ecological Niche => Tag Portions -.
+                                  |
+Taxonomy nodes => Tag List ---------> Taxonomy Prior Probability ->1
+1.Indestial Flow:                                                  |
+                                                                   |
+Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined alignments(output Top 5) -> Annotation (Goal)
+                                                        |       |
+2.ab initio Flow:                                       |       2<---------------------------------.
+                                                        |                                          |
+                                           Obvious alignments -> Tag Portions from Taxonomy -> Taxonomy Prior Probability
+````
+
 ## Notes
 
 * NCBI Taxonomy DB 记录在其`taxdump.tar.gz`中，可以通过[Ensembl API](http://asia.ensembl.org/info/docs/api/api_git.html)或直接用 MySQL 访问[其数据库](http://asia.ensembl.org/info/data/mysql.html)。

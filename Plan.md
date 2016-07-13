@@ -16,12 +16,12 @@
 
 ## Example Cases
 
-### Type 1: Annoate with Given Priority
+### Type 1, Industrial Flow: Annoate with Given Priority
 
 对肠道微生物组的分析，这些不可能的菌排后面：噬酸、硫细菌、蓝细菌。
 对体表微生物的分析，把厌氧的排后面。
 
-### Type 2: 相似的生态位包含营养型相似的复数物种，找到一个则期望有一堆
+### Type 2, _ab initio_ Flow: 相似的生态位包含营养型相似的复数物种，找到一个则期望有一堆
 
 若样品分析结果显著表明其中含有硫细菌，则其中含有其它厌氧生物的概率增加，此时需要把厌氧生物的分值提高。
 

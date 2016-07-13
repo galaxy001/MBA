@@ -47,4 +47,4 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 ## Notes
 
-* NCBI Taxonomy DB 记录在其`taxdump.tar.gz`中，可以通过[Ensembl API](http://asia.ensembl.org/info/docs/api/api_git.html)或直接用 MySQL 访问[其数据库](http://asia.ensembl.org/info/data/mysql.html)。
+* NCBI Taxonomy DB 记录在其`taxdump.tar.gz`中，也可以通过[Ensembl API](http://asia.ensembl.org/info/docs/api/api_git.html)或直接用 MySQL 访问[其数据库](http://asia.ensembl.org/info/data/mysql.html)。

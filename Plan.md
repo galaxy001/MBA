@@ -12,5 +12,7 @@
 
 其中，物种分类使用倾向按特征划分的类 ontology 的划分，而非纯粹的 taxonomy，以便将不同功能分开。如：[NCBI Taxonomy](http://www.ncbi.nlm.nih.gov/taxonomy)。
 
+## Details
 
+* 每类功能内的比对的 hit，可以参考 BLAST 给出 [Expect (E) value](http://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ#expect)。
 

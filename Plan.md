@@ -39,7 +39,7 @@ Ecological Niche => Tag Portions -.
 Taxonomy nodes => Tag List ---------> Taxonomy Prior Probability ->1
 1.Industrial Flow:                                                 |
                                                                    |
-Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined alignments(output Top 5) -> Annotation (Goal)
+Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined alignments(output Top 5 or so) -> Annotation (Goal)
                                                         |       |
 2.ab initio Flow:                                       |       2<---------------------------------.
                                                         |                                          |

@@ -42,12 +42,13 @@ Example link: <https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&ta
 > Metabolism	| Auxotroph (L-lysine auxotroph) (IMG_PIPELINE; 2015-10-05)
 > Metabolism	| Prototrophic (L-alanine prototroph) (IMG_PIPELINE; 2015-10-05)
 > Metabolism	| Auxotroph (L-aspartate auxotroph) (IMG_PIPELINE; 2015-10-05)
+> Metabolism	| ...
 
 ## Human Oral Microbiome Database
 
 Example link: <http://www.homd.org/index.php?name=HOMD&oraltaxonid=389&view=dynamic>
 
-__Text Mining Required.__
+_Text Mining Required._
 
 > #### Cultivability:
 > Requires 10 mg/l pyrixoxal hydrochloride or 100 mg/l L-cysteine for growth [1]

@@ -1,8 +1,53 @@
 # Phenotypic Data Sources
 
+## IMG/M @ JGI
+
+Example link: <https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&taxon_oid=637000072>
+
+> Study Name (Proposal Name)	| Chlorobium chlorochromatii CaD3
+> :-------------- | :---------------
+> Organism Name	| Chlorobium chlorochromatii CaD3
+> Taxon ID	| 637000072
+> NCBI Taxon ID	| 340177
+> Project Information	 | 
+> Bioproject Accession	| PRJNA13921
+> Biosample Accession	| SAMN02598328
+> Biotic Relationships	| Symbiotic
+> Cell Arrangement	| Chains, Singles
+> Cell Shape	| Rod-shaped
+> Culture Type	| Isolate
+> Cultured	| Yes
+> Ecosystem	| Environmental
+> Ecosystem Category	| Aquatic
+> Ecosystem Subtype	| Lentic
+> Ecosystem Type	| Freshwater
+> Energy Source	| Phototroph
+> GOLD Sequencing Quality	| Level 6: Finished
+> GOLD Sequencing Strategy	| Whole Genome Sequencing
+> GPTS Proposal Id	| 300071
+> Geographic Location	| Freshwater lake, Germany.
+> Gram Staining	| Gram-
+> Habitat	| Aquatic, Fresh water
+> Isolation	| Isolated from a phototrophic consortia obtained from a freshwater lake in Germany.
+> Motility	| Motile
+> Oxygen Requirement	| Anaerobe
+> PMO ID	| 16939
+> Phenotype	| Green sulfur
+> Relevance	| Biotechnological
+> Seq Status	| Complete
+> Specific Ecosystem	| Unclassified
+> Temperature Range	| Mesophile
+> Type Strain	| Unknown
+> Phenotypes/Metabolism from Pathway Assertion	|  
+> Metabolism	| Auxotroph (L-lysine auxotroph) (IMG_PIPELINE; 2015-10-05)
+> Metabolism	| Prototrophic (L-alanine prototroph) (IMG_PIPELINE; 2015-10-05)
+> Metabolism	| Auxotroph (L-aspartate auxotroph) (IMG_PIPELINE; 2015-10-05)
+
 ## Human Oral Microbiome Database
 
 Example link: <http://www.homd.org/index.php?name=HOMD&oraltaxonid=389&view=dynamic>
+
+__Text Mining Required.__
 
 > #### Cultivability:
 > Requires 10 mg/l pyrixoxal hydrochloride or 100 mg/l L-cysteine for growth [1]

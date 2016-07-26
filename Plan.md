@@ -51,3 +51,29 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 ## Notes
 
 * NCBI Taxonomy DB 记录在其`taxdump.tar.gz`中，也可以通过[Ensembl API](http://asia.ensembl.org/info/docs/api/api_git.html)或直接用 MySQL 访问[其数据库](http://asia.ensembl.org/info/data/mysql.html)。
+
+* 比对建议用`MOSAIK`, <https://github.com/wanpinglee/MOSAIK>. 参考李波刚发来看的[Genomic variation landscape of the human gut microbiome](http://www.nature.com/nature/journal/v493/n7430/full/nature11711.html).
+
+------
+
+# 其它
+
+## 关于16S用来区分个体时涉及的统计问题
+
+````
+M个不同的元素，共计Q个，分配到N个不同的集合内，Q >> M > N。
+分配结果可以测量，但存在测量误差e。通常 M > 5N。认为e约为5%。
+现在需要用其中 X种元素的分配结果来区分其中 Y种集合。 X<=M, Y<=N。
+
+需要使 X 尽可能小，Y 尽可能大，同时，“区分”发生错误的概率E足够小。
+在给定E的情况下，求X与Y的相互关系。
+另外，需要个求给定E、Y下，最小的X。
+（为简化书写，集合的名称在不等式中用来代表集合内元素个数）
+
+注：分配结果是元素出现的次数，而非简单的有无。
+
+即：测量N个人的肠道微生物丰度，想的到X种代表性的微生物物种，用来区分这N个人。物种丰度的测量误差为e，区分不同人时犯错误的期望是E。
+要求E<1。为了减小E，可以放弃部分人，只区分Y个人，Y<=N。
+需要求 E、X、Y的函数关系。
+另外，希望有个找到最少的X的方法。
+````

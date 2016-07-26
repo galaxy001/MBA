@@ -53,6 +53,7 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 * NCBI Taxonomy DB 记录在其`taxdump.tar.gz`中，也可以通过[Ensembl API](http://asia.ensembl.org/info/docs/api/api_git.html)或直接用 MySQL 访问[其数据库](http://asia.ensembl.org/info/data/mysql.html)。
 
 * 比对建议用`MOSAIK`, <https://github.com/wanpinglee/MOSAIK>. 参考李波刚发来看的[Genomic variation landscape of the human gut microbiome](http://www.nature.com/nature/journal/v493/n7430/full/nature11711.html).
+   * `MOSAIK`提到了一个新出的高速 Smith-Waterman 的包，[mengyao/Complete-Striped-Smith-Waterman-Library](https://github.com/mengyao/Complete-Striped-Smith-Waterman-Library)，记录备案。
 
 ------
 

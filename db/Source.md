@@ -1,6 +1,24 @@
 # Phenotypic Data Sources
 
-## IMG/M @ JGI
+## Choice
+
+__IMG/M @ JGI__ by _Crawing_.
+ 
+List: [IMG/M@JGI -> Find Genomes -> Genome Browser](https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TreeFile&page=domain&domain=all) -> `View Alphabetically`.
+
+Item View for human review: [a record example](https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&taxon_oid=637000072).
+
+If we want to include genomes other than NCBI Taxon set from [JGI](http://genome.jgi.doe.gov/), we can fetch with sth. like `curl` follow its [API](http://genome.jgi.doe.gov/help/download.jsf). 
+
+````bash
+curl 'https://signon.jgi.doe.gov/signon/create' --data-urlencode 'login=USER_NAME' --data-urlencode 'password=USER_PASSWORD' -c cookies > /dev/null
+curl 'http://genome.jgi.doe.gov/ext-api/downloads/get-directory?organism=PhytozomeV10' -b cookies > files.xml
+curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&url=/PhytozomeV10/download/_JAMO/53112a9e49607a1be0055980/Alyrata_107_v1.0.annotation_info.txt' -b cookies > Alyrata_107_v1.0.annotation_info.txt
+````
+
+## Candidate
+
+### IMG/M @ JGI
 
 Example link: <https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&taxon_oid=637000072>
 
@@ -44,7 +62,7 @@ Example link: <https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&ta
 > Metabolism	| Auxotroph (L-aspartate auxotroph) (IMG_PIPELINE; 2015-10-05)
 > Metabolism	| ...
 
-## Human Oral Microbiome Database
+### Human Oral Microbiome Database
 
 Example link: <http://www.homd.org/index.php?name=HOMD&oraltaxonid=389&view=dynamic>
 

@@ -16,6 +16,8 @@ curl 'http://genome.jgi.doe.gov/ext-api/downloads/get-directory?organism=Phytozo
 curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&url=/PhytozomeV10/download/_JAMO/53112a9e49607a1be0055980/Alyrata_107_v1.0.annotation_info.txt' -b cookies > Alyrata_107_v1.0.annotation_info.txt
 ````
 
+ * Link to [Offical Forum](https://groups.google.com/a/lbl.gov/forum/?hl=en&fromgroups=#!topic/img-user-forum/o4Pjc_GV1js), if helps.
+
 ## Candidate
 
 ### IMG/M @ JGI

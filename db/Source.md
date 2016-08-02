@@ -20,8 +20,8 @@ curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&ur
 
 ### de-duplicate
 
- * In [Genomic variation landscape of the human gut microbiome](http://www.nature.com/doifinder/10.1038/nature11711)，WU-BLAST with `B=2000 spoutmax=3 span1` was used to get average nucleotide identity (ANI) between. And an operational of 95% ANI was chosen to cluster the genomes. 
- * 
+ * In [Genomic variation landscape of the human gut microbiome](http://www.nature.com/doifinder/10.1038/nature11711)，WU-BLAST with `B=2000 spoutmax=3 span1` was used to get average nucleotide identity (ANI) between. And an operational of 95% ANI was chosen to cluster the genomes. (by "clustered", the author should mean skipped, comparing to "dominant"/"prevalent"; 95% ANI can be a species delineation standard)
+ * In [A metagenome-wide association study of gut microbiota in type 2 diabetes](http://www.nature.com/doifinder/10.1038/nature11450), a gene set is built.
 
 ## Candidate
 

@@ -21,7 +21,7 @@ curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&ur
 ### de-duplicate
 
  * In [Genomic variation landscape of the human gut microbiome](http://www.nature.com/doifinder/10.1038/nature11711)，WU-BLAST with `B=2000 spoutmax=3 span1` was used to get average nucleotide identity (ANI) between. And an operational of 95% ANI was chosen to cluster the genomes. (by "clustered", the author should mean skipped, comparing to "dominant"/"prevalent"; 95% ANI can be a species delineation standard)
- * In [A metagenome-wide association study of gut microbiota in type 2 diabetes](http://www.nature.com/doifinder/10.1038/nature11450), a gene set is built. ...
+ * In [A metagenome-wide association study of gut microbiota in type 2 diabetes](http://www.nature.com/doifinder/10.1038/nature11450), a gene set is built, using KEGG and EggNOG proteomes.
  * In [mPUMA](https://microbiomejournal.biomedcentral.com/articles/10.1186/2049-2618-1-23), its pipeline align OTUs to both DNA and AA.
    * ![mPUMA workflow](https://static-content.springer.com/image/art%3A10.1186%2F2049-2618-1-23/MediaObjects/40168_2013_Article_23_Fig1_HTML.jpg)
  * .

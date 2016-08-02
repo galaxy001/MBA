@@ -54,7 +54,9 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 * 比对建议用`MOSAIK`, <https://github.com/wanpinglee/MOSAIK>. 参考李波刚发来看的[Genomic variation landscape of the human gut microbiome](http://www.nature.com/nature/journal/v493/n7430/full/nature11711.html).
    * `MOSAIK`提到了一个新出的高速 Smith-Waterman 的包，[mengyao/Complete-Striped-Smith-Waterman-Library](https://github.com/mengyao/Complete-Striped-Smith-Waterman-Library)，记录备案。
-   * 若参考序列为蛋白（比如JGI上下载的注释好了的寄语） 可以用[DIAMOND](https://github.com/bbuchfink/diamond)来做比对。灵敏度接近BLAST，且比BLAST快很多。
+   * 若参考序列为蛋白（比如JGI上下载的注释好了的基因） 可以用[DIAMOND](https://github.com/bbuchfink/diamond)来做比对。灵敏度接近BLAST，且比BLAST快很多。
+
+* 使用 NCBI BLAST 的`nt`, `nr`库，提取`taxid`对应的序列，然后以提取结果为新参考序列，建索引来作比对。
 
 ------
 

@@ -18,6 +18,11 @@ curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&ur
 
  * Link to [Offical Forum](https://groups.google.com/a/lbl.gov/forum/?hl=en&fromgroups=#!topic/img-user-forum/o4Pjc_GV1js), if helps.
 
+### de-duplicate
+
+ * In [Genomic variation landscape of the human gut microbiome](http://www.nature.com/doifinder/10.1038/nature11711)，WU-BLAST with `B=2000 spoutmax=3 span1` was used to get average nucleotide identity (ANI) between. And an operational of 95% ANI was chosen to cluster the genomes. 
+ * 
+
 ## Candidate
 
 ### IMG/M @ JGI

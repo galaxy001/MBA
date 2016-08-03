@@ -7,6 +7,8 @@ __IMG/M @ JGI__ by _Crawing_.
  * List: [IMG/M@JGI -> Find Genomes -> Genome Browser](https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TreeFile&page=domain&domain=all) -> `View Alphabetically`.
    * We can `select` the whole "Metadata" table and `join` with "Genus and NCBI Taxon ID" from "Genome Field" table.
    * Item View for human review: [a record example](https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TaxonDetail&taxon_oid=637000072).
+   * IMG/M@JGI require UA to dump: `curl 'https://img.jgi.doe.gov/cgi-bin/m/main.cgi?section=TreeFile&page=domain&domain=all&domainfile=treenovpg2342_4c5f7b0146f43a0c122e0831bbf7ac81&selectedfile=treestate2342_4c5f7b0146f43a0c122e0831bbf7ac81&open=all' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+`.
 
  * If we want to include genomes other than NCBI Taxon set from [JGI](http://genome.jgi.doe.gov/), we can fetch with sth. like `curl` follow its [API](http://genome.jgi.doe.gov/help/download.jsf). 
 

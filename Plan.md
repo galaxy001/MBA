@@ -58,6 +58,14 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 * 使用 NCBI BLAST 的`nt`, `nr`库，提取`taxid`对应的序列，然后以提取结果为新参考序列，建索引来作比对。
 
+* 对比对结果的过滤，可以参考 [CIP](https://www.biostars.org/p/59879/#60037)。
+
+   * In [Salse et al. 2009](http://www.plantcell.org/content/20/1/11.full) they introduced two parameters to allow the identification of the best BLAST alignment - the highest cumulative percentage of identity in the longest cumulative length.
+
+   * The first parameter, cumulative identity percentage (CIP) corresponds to the cumulative percentage of sequence identity obtained for all the HSPs (CIP = [∑ ID by HSP/AL] × 100) where AL is the sum of all hsp lengths.
+
+   * The second parameter, CALP, is the cumulative alignment length percentage which represents the sum of the HSP lengths (AL) for all the HSPs divided by the length of the query sequence (CALP = AL/query).
+
 ------
 
 # 其它

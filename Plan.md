@@ -66,6 +66,17 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
    * The second parameter, CALP, is the cumulative alignment length percentage which represents the sum of the HSP lengths (AL) for all the HSPs divided by the length of the query sequence (CALP = AL/query).
 
+## Program Design
+
+### 1. Reference Selection
+
+* Use SQLite to store the tag information.
+* Use proportion to reveal whether a column(tag) is distinctive.
+  * the 2nd larger tag proportion should be at least 10%. (?)
+* a CL-UI tool for user to select tags, which output taxids with weights.
+
+### 2. Reference Dedup
+
 ------
 
 # 其它

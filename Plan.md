@@ -72,10 +72,23 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 * Use SQLite to store the tag information.
 * Use proportion to reveal whether a column(tag) is distinctive.
-  * the 2nd larger tag proportion should be at least 10%. (?)
+  * the 2nd larger tag proportion should be at least 10% in taged rows. (?)
+  * All tags should cover at least 50% rows. (?)
 * a CL-UI tool for user to select tags, which output taxids with weights.
 
-### 2. Reference Dedup
+### 2. Reference Dedup & Index
+
+* See [db/Source.md](db/Source.md#de-duplicate).
+
+* `bwa index`(?)
+
+### 3. Alignment
+
+BWA ?
+
+### 4. Result Scorting and Filter
+
+.
 
 ------
 

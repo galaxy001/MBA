@@ -11,6 +11,9 @@ $dbfile = 'tag.db' unless defined $dbfile;
 
 truncate $dbfile,0;
 
+my $CidPropMin = 0.5;
+my $Vid2ndPropMin = 0.1;
+
 my %attr = (
     RaiseError => 0,
     PrintError => 1,
@@ -60,7 +63,7 @@ sub openfile($) {
 
 my $sth = $dbh->prepare( "INSERT INTO RawData ( eid,colname,thevalue ) VALUES ( ?,?,? )" );
 
-my (%EID2TaxID,$TaxIDcnt);
+my ($TaxIDcnt,%EID2TaxID)=(0);
 
 print STDERR "[!]Loading: ...";
 my $in = openfile($infile);
@@ -95,16 +98,16 @@ for (split /;/,$sql) {
 $dbh->commit;
 print STDERR "\b\b\bdone.\n";
 
+my (%ColCount);
 $sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData GROUP BY colname ORDER BY Cnt DESC;" );
 my $sth2 = $dbh->prepare( "INSERT INTO ColData ( colname,Cnt ) VALUES ( ?,? )" );
 $sth->execute();
 while (my $rv=$sth->fetchrow_arrayref) {
 	#ddx $rv;
-	if ($rv->[0] eq 'NCBI Taxon ID') {
-		$TaxIDcnt = $rv->[1];
-	}
+	$ColCount{$rv->[0]} = $rv->[1];
 	$sth2->execute($rv->[0],$rv->[1]);
 }
+$TaxIDcnt = $ColCount{'NCBI Taxon ID'} or die "[x]Cannot find 'NCBI Taxon ID'.\n";
 #$sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData WHERE thevalue <> '' GROUP BY colname;" );
 #$sth2 = $dbh->prepare( "INSERT INTO ColData ( cid,colname,rCnt ) VALUES ( ?,?,? )" );
 

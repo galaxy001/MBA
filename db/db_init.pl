@@ -110,6 +110,17 @@ while (my $rv=$sth->fetchrow_arrayref) {
 $TaxIDcnt = $ColCount{'NCBI Taxon ID'} or die "[x]Cannot find 'NCBI Taxon ID'.\n";
 #$sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData WHERE thevalue <> '' GROUP BY colname;" );
 #$sth2 = $dbh->prepare( "INSERT INTO ColData ( cid,colname,rCnt ) VALUES ( ?,?,? )" );
+$sth = $dbh->prepare( "SELECT thevalue, COUNT(thevalue) as Cnt from RawData WHERE colname = ? GROUP BY thevalue ORDER BY Cnt DESC;" );
+for my $k (keys %ColCount) {
+	if ($ColCount{$k} >= $TaxIDcnt * $CidPropMin) {
+		$sth->execute($k);
+		my $rv = $sth->fetchall_arrayref;
+		ddx $rv;
+		next if scalar @$rv < 2;
+		print scalar @$rv,"<--\n";
+	}
+}
+
 
 $dbh->commit;
 $dbh->disconnect;

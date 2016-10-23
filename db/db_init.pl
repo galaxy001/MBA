@@ -11,8 +11,9 @@ $dbfile = 'tag.db' unless defined $dbfile;
 
 truncate $dbfile,0;
 
-my $CidPropMin = 0.5;
-my $Vid2ndPropMin = 0.1;
+my $CidPropMin = 0.01;
+my $Vid2ndPropMin = 0.01;
+my $maxKinds = 50;
 
 my %attr = (
     RaiseError => 0,
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS ValueLists
 ( vid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   cid INTEGER NOT NULL,
   thevalue TEXT NOT NULL,
-  cnt INTEGER NOT NULL,
+  vCnt INTEGER NOT NULL,
   FOREIGN KEY (cid) REFERENCES "ColData" (cid)
 );
 /;
@@ -104,20 +105,41 @@ my $sth2 = $dbh->prepare( "INSERT INTO ColData ( colname,Cnt ) VALUES ( ?,? )" )
 $sth->execute();
 while (my $rv=$sth->fetchrow_arrayref) {
 	#ddx $rv;
-	$ColCount{$rv->[0]} = $rv->[1];
+	$ColCount{$rv->[0]} = [$rv->[1]];
 	$sth2->execute($rv->[0],$rv->[1]);
+	my $cid = $dbh->last_insert_id("","","","");
+	$ColCount{$rv->[0]}->[1] = $cid;
 }
-$TaxIDcnt = $ColCount{'NCBI Taxon ID'} or die "[x]Cannot find 'NCBI Taxon ID'.\n";
+$TaxIDcnt = $ColCount{'NCBI Taxon ID'}->[0] or die "[x]Cannot find 'NCBI Taxon ID'.\n";
 #$sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData WHERE thevalue <> '' GROUP BY colname;" );
-#$sth2 = $dbh->prepare( "INSERT INTO ColData ( cid,colname,rCnt ) VALUES ( ?,?,? )" );
+$sth2 = $dbh->prepare( "INSERT INTO ValueLists ( cid,thevalue,vCnt ) VALUES ( ?,?,? )" );
 $sth = $dbh->prepare( "SELECT thevalue, COUNT(thevalue) as Cnt from RawData WHERE colname = ? GROUP BY thevalue ORDER BY Cnt DESC;" );
 for my $k (keys %ColCount) {
-	if ($ColCount{$k} >= $TaxIDcnt * $CidPropMin) {
+	next if $k eq 'Combined Samples' or $k eq 'Comment' or $k eq 'Metabolism' or $k eq 'Seq Status' or $k eq 'Is Public' or $k eq 'High Quality' or $k =~ /^(GOLD|Submission|Longhurst|Host|IMG|ITS|Sequencing|Genome) /;
+	if ($ColCount{$k}->[0] >= $TaxIDcnt * $CidPropMin) {
 		$sth->execute($k);
 		my $rv = $sth->fetchall_arrayref;
-		ddx $rv;
-		next if scalar @$rv < 2;
-		print scalar @$rv,"<--\n";
+		#ddx $rv;
+		next if scalar @$rv < 2 or scalar @$rv > $maxKinds;
+		#next if ($rv->[1]->[1] < $TaxIDcnt*$Vid2ndPropMin);
+		my ($strCnt,$strLen) = (0,0);
+		for (@$rv) {
+			my $str = $_->[0];
+			if ($str =~ /[A-Za-z]{3}/) {
+				++$strCnt;
+				$strLen += length $str;
+				print "--> $k: $str, $_->[1]\n";
+			}
+		}
+		if ($strCnt<2 or ($strLen/$strCnt)>50) {
+			print "### $strCnt -> $strLen ### $k\n";
+			next;
+		}
+		print scalar @$rv,"<-- $rv->[1]->[1] $k\n";
+		for (@$rv) {
+			$sth2->execute($ColCount{$k}->[1],$_->[0],$_->[1]);
+			print "$ColCount{$k}->[1],$_->[0],$_->[1] <<<\n"
+		}
 	}
 }
 

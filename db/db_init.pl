@@ -40,6 +40,12 @@ CREATE TABLE IF NOT EXISTS ValueLists
   vCnt INTEGER NOT NULL,
   FOREIGN KEY (cid) REFERENCES "ColData" (cid)
 );
+CREATE TABLE `MetaData` (
+	eid INTEGER NOT NULL,
+	NCBITaxonID	INTEGER,
+	cid	INTEGER,
+	vid	INTEGER
+);
 /;
 for (split /;/,$sql) {
 	next if /^\s*$/;

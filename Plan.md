@@ -68,7 +68,9 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 ## Program Design
 
-### 1. Reference Selection
+### Process
+
+#### 1. Reference Selection
 
 * Use SQLite to store the tag information.
 * Use proportion to reveal whether a column(tag) is distinctive.
@@ -76,19 +78,52 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
   * All tags should cover at least 50% rows. (?)
 * a CL-UI tool for user to select tags, which output taxids with weights.
 
-### 2. Reference Dedup & Index
+##### 1.1 Weight
+
+* Between [0,1] for each catalog. 0 for impossible. 0.5 for missing.
+* For each Value within one catalog, score each by [0,10] scores, and divide by number of tags to normalize. Default score is 5 for 0.5.
+* Multiply them up.
+
+#### 2. Reference Dedup & Index
 
 * See [db/Source.md](db/Source.md#de-duplicate).
 
 * `bwa index`(?)
 
-### 3. Alignment
+#### 3. Alignment
 
 BWA ?
 
-### 4. Result Scorting and Filter
+#### 4. Result Scorting and Filter
 
 .
+
+### SQLite
+
+````SQL
+CREATE TABLE IF NOT EXISTS RawData
+(  eid INTEGER NOT NULL,
+   colname TEXT NOT NULL,
+   thevalue TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ColData
+( cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  colname TEXT NOT NULL,
+  Cnt INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS ValueLists
+( vid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  cid INTEGER NOT NULL,
+  thevalue TEXT NOT NULL,
+  vCnt INTEGER NOT NULL,
+  FOREIGN KEY (cid) REFERENCES "ColData" (cid)
+);
+CREATE TABLE `MetaData` (
+	`NCBI Taxon ID`	INTEGER,
+	`cid`	INTEGER,
+	`vid`	INTEGER
+);
+````
 
 ------
 

@@ -87,6 +87,7 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 #### 2. Reference Dedup & Index
 
 * See [db/Source.md](db/Source.md#de-duplicate).
+  * [CD-HIT](https://github.com/weizhongli/cdhit) can be used for clustering and comparing protein or nucleotide sequences.
 
 * `bwa index`(?)
 

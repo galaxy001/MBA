@@ -103,3 +103,16 @@ Detailed [Database Structure](http://www.homd.org/index.php?name=Article&sid=25&
 
 See also <ftp://ftp.homd.org/taxonomy/daily_mysql_dump/>.
 
+## Sequence & Annotation Source
+
+### NCBI Complete Genome[s](http://itsm.genomics.org.cn:8080/request/request_queryRequestDetail?ticket.ticketId=261966)
+
+````bash
+curl ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/bacteria/assembly_summary.txt | awk -F '\t' '{if($12=="Complete Genome") print $20}'
+curl ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/archaea/assembly_summary.txt | awk -F '\t' '{if($12=="Complete Genome") print $20}'
+curl ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/fungi/assembly_summary.txt | awk -F '\t' '{if($12=="Complete Genome") print $20}'
+curl ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/protozoa/assembly_summary.txt | awk -F '\t' '{if($12=="Complete Genome") print $20}'
+````
+
+`*_cds_from_genomic.fna.gz ` for Genes, grouped by functions.  
+`*_genomic.*` for Strain-specific kmers.

@@ -137,7 +137,7 @@ for my $k (keys %ColCount) {
 				print "--> $k: $str, $_->[1]\n";
 			}
 		}
-		if ($strCnt<2 or ($strLen/$strCnt)>50) {
+		if ($strCnt<1 or ($strLen/$strCnt)>50) {
 			print "### $strCnt -> $strLen ### $k\n";
 			next;
 		}
@@ -148,7 +148,6 @@ for my $k (keys %ColCount) {
 		}
 	}
 }
-
 
 $dbh->commit;
 $dbh->disconnect;

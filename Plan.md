@@ -88,7 +88,7 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 
 * See [db/Source.md](db/Source.md#de-duplicate).
   * [CD-HIT](https://github.com/weizhongli/cdhit) can be used for clustering and comparing protein or nucleotide sequences.
-    + Word size 9, thresholds 0.95 => `-mask NXnx -c 0.95 -n 9`
+    + Word size 9, thresholds 0.95 => `-mask NXnx -c 0.95 -n 9 -g 1 -B 1`
 
 * `bwa index`(?)
 

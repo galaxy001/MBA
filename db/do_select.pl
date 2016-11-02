@@ -25,28 +25,31 @@ my %attr = (
     AutoCommit => 0
 );
 my $dbh = DBI->connect('dbi:SQLite:dbname='.$dbfile,'','',\%attr) or die $DBI::errstr;
-my $sth = $dbh->prepare( "SELECT cid,colname FROM ColData" );
+my $sth = $dbh->prepare( "SELECT cid,colname,Cnt FROM ColData" );
 $sth->execute();
-my (%EID2TaxID);
+my (%EID2TaxID,%EID2Cnt);
 while (my $rv=$sth->fetchrow_arrayref) {
 	$EID2TaxID{$rv->[0]} = $rv->[1];
+	$EID2Cnt{$rv->[0]} = $rv->[2];
 }
 #ddx \%EID2TaxID;
 
 warn "Please apply score [0~10] to each options below: ['\033[1m5\033[0m' for neutral, '\033[1mN\033[0m' for all unknown]\n";
 our $myConfig = MYINI->new();
 for my $k (sort {$a <=> $b} keys %EID2TaxID) {
-	$sth = $dbh->prepare( "SELECT thevalue FROM ValueLists WHERE cid = ? ORDER BY thevalue ASC" );
+	$sth = $dbh->prepare( "SELECT thevalue,vCnt FROM ValueLists WHERE cid = ? ORDER BY thevalue ASC" );
 	$sth->execute($k);
 	my $rv=$sth->fetchall_arrayref;
 	my $cnt = scalar @$rv;
 	next if $cnt < 1;
 	#ddx $rv;
-	warn "\nCatalog $EID2TaxID{$k} ($cnt):\n";
+	warn "\nCatalog $EID2TaxID{$k} ($EID2Cnt{$k}/$cnt):\n";
 	#$myConfig->{$EID2TaxID{$k}} = {};
 	my ($flag,$ri)=(1);
 	for my $t (@$rv) {
-		print STDERR "\t[$t->[0]]: ";
+		my $percent = int(1000*$t->[1]/$EID2Cnt{$k})/10;
+		my $prompt = "\t[$t->[0],$t->[1]](${percent}%): ";
+		print STDERR $prompt;
 		if ($flag) {
 			chomp($ri = <STDIN>);
 			if ($ri =~ /^[Nn]$/) {
@@ -57,7 +60,7 @@ for my $k (sort {$a <=> $b} keys %EID2TaxID) {
 			$ri = 0 if $ri < 0;
 			$ri = 10 if $ri > 10;
 			$ri = int($ri+0.5);
-			print "\033[1A\t[$t->[0]]: ";
+			print "\033[1A$prompt";
 		} else {
 			$ri = 5;
 		}

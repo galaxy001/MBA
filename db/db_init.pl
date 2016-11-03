@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS RawData
 CREATE TABLE IF NOT EXISTS ColData
 ( cid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   colname TEXT NOT NULL,
+  Type INTEGER NOT NULL DEFAULT(0),
   Cnt INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS ValueLists
@@ -108,6 +109,7 @@ print STDERR "\b\b\bdone.\n";
 my (%ColCount);
 $sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData GROUP BY colname ORDER BY Cnt DESC;" );
 my $sth2 = $dbh->prepare( "INSERT INTO ColData ( colname,Cnt ) VALUES ( ?,? )" );
+my $sth3 = $dbh->prepare( "UPDATE ColData SET Type = ? WHERE colname = ?" );
 $sth->execute();
 while (my $rv=$sth->fetchrow_arrayref) {
 	#ddx $rv;
@@ -115,6 +117,12 @@ while (my $rv=$sth->fetchrow_arrayref) {
 	$sth2->execute($rv->[0],$rv->[1]);
 	my $cid = $dbh->last_insert_id("","","","");
 	$ColCount{$rv->[0]}->[1] = $cid;
+}
+for ('Cell Arrangement',) {
+	$sth2->execute(1,$_);
+}
+for ('Temperature Range',) {
+	$sth2->execute(2,$_);
 }
 $TaxIDcnt = $ColCount{'NCBI Taxon ID'}->[0] or die "[x]Cannot find 'NCBI Taxon ID'.\n";
 #$sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData WHERE thevalue <> '' GROUP BY colname;" );

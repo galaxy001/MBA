@@ -120,11 +120,11 @@ while (my $rv=$sth->fetchrow_arrayref) {
 	$ColCount{$rv->[0]}->[2] = 0;
 }
 for ('Cell Arrangement',) {
-	$sth2->execute(1,$_);
+	$sth3->execute(1,$_);
 	$ColCount{$_}->[2] = 1;
 }
 for ('Temperature Range',) {
-	$sth2->execute(2,$_);
+	$sth3->execute(2,$_);
 	$ColCount{$_}->[2] = 2;
 }
 $TaxIDcnt = $ColCount{'NCBI Taxon ID'}->[0] or die "[x]Cannot find 'NCBI Taxon ID'.\n";

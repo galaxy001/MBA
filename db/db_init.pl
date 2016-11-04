@@ -117,12 +117,15 @@ while (my $rv=$sth->fetchrow_arrayref) {
 	$sth2->execute($rv->[0],$rv->[1]);
 	my $cid = $dbh->last_insert_id("","","","");
 	$ColCount{$rv->[0]}->[1] = $cid;
+	$ColCount{$rv->[0]}->[2] = 0;
 }
 for ('Cell Arrangement',) {
 	$sth2->execute(1,$_);
+	$ColCount{$_}->[2] = 1;
 }
 for ('Temperature Range',) {
 	$sth2->execute(2,$_);
+	$ColCount{$_}->[2] = 2;
 }
 $TaxIDcnt = $ColCount{'NCBI Taxon ID'}->[0] or die "[x]Cannot find 'NCBI Taxon ID'.\n";
 #$sth = $dbh->prepare( "SELECT colname, COUNT(colname) as Cnt from RawData WHERE thevalue <> '' GROUP BY colname;" );
@@ -136,23 +139,31 @@ for my $k (keys %ColCount) {
 		#ddx $rv;
 		next if scalar @$rv < 2 or scalar @$rv > $maxKinds;
 		#next if ($rv->[1]->[1] < $TaxIDcnt*$Vid2ndPropMin);
-		my ($strCnt,$strLen) = (0,0);
-		for (@$rv) {
-			my $str = $_->[0];
-			if ($str =~ /[A-Za-z]{3}/) {
-				++$strCnt;
-				$strLen += length $str;
-				print "--> $k: $str, $_->[1]\n";
+		if ($ColCount{$k}->[2] == 0) {
+			my ($strCnt,$strLen) = (0,0);
+			for (@$rv) {
+				my $str = $_->[0];
+				if ($str =~ /[A-Za-z]{3}/) {
+					++$strCnt;
+					$strLen += length $str;
+					print "--> $k: $str, $_->[1]\n";
+				}
 			}
-		}
-		if ($strCnt<1 or ($strLen/$strCnt)>50) {
-			print "### $strCnt -> $strLen ### $k\n";
-			next;
-		}
-		print scalar @$rv,"<-- $rv->[1]->[1] $k\n";
-		for (@$rv) {
-			$sth2->execute($ColCount{$k}->[1],$_->[0],$_->[1]);
-			print "$ColCount{$k}->[1],$_->[0],$_->[1] <<<\n"
+			if ($strCnt<1 or ($strLen/$strCnt)>50) {
+				print "### $strCnt -> $strLen ### $k\n";
+				next;
+			}
+			print scalar @$rv,"<-- $rv->[1]->[1] $k\n";
+			for (@$rv) {
+				$sth2->execute($ColCount{$k}->[1],$_->[0],$_->[1]);
+				print "$ColCount{$k}->[1],$_->[0],$_->[1] <<<\n"
+			}
+		} elsif ($ColCount{$k}->[2] == 1) {
+			;
+		} elsif ($ColCount{$k}->[2] == 2) {
+			;
+		} else {
+			warn "[x]Unknown Type [$ColCount{$k}->[2]].\n";
 		}
 	}
 }

@@ -51,10 +51,10 @@ for my $catalog (@{$myConfig->{']'}}) {
 			my ($taxid,$value,$name) = @$rv2;
 			if (exists $myConfig->{$catalog}->{$value}) {
 				if (exists $Result{$taxid}) {
-					$Result{$taxid}->[1] += $myConfig->{$catalog}->{$value} -5;
-					#warn "$Result{$taxid}->[0]\t$name\n" if $Result{$taxid}->[0] ne $name;
+					$Result{$taxid}->[0] += $myConfig->{$catalog}->{$value} -5;
+					#warn "$Result{$taxid}->[1]\t$name\n" if $Result{$taxid}->[1] ne $name;
 				} else {
-					$Result{$taxid} = [$name,0];
+					$Result{$taxid} = [0,$name];
 				}
 			} else {
 				warn ".\n";

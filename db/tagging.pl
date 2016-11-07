@@ -67,7 +67,7 @@ $dbh->rollback;
 $dbh->disconnect;
 
 open O,'>',$outfile or die "Error opening $outfile: $!\n";
-print O join("\t",qw{TaxID Score Name}),"\n";
+print O join("\t",qw{#TaxID Score Name}),"\n";
 for my $taxid (sort {$a <=> $b} keys %Result) {
 	print O join("\t",$taxid,@{$Result{$taxid}}),"\n";
 }

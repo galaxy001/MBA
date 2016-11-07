@@ -34,7 +34,7 @@ while (my $rv=$sth->fetchrow_arrayref) {
 }
 #ddx \%EID2TaxID;
 
-warn "Please apply score [0~10] to each options below: ['\033[1m5\033[0m' for neutral, '\033[1mN\033[0m' for all unknown]\n";
+warn "Please apply score [0~10] to each options below: ['\033[1m5\033[0m' for neutral(50%), '\033[1mN\033[0m' for all unknown]\n";
 our $myConfig = MYINI->new();
 for my $k (sort {$a <=> $b} keys %EID2TaxID) {
 	$sth = $dbh->prepare( "SELECT thevalue,vCnt FROM ValueLists WHERE cid = ? ORDER BY thevalue ASC" );

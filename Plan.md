@@ -81,8 +81,8 @@ Common Path: Sample DNA -> WGS -> contigs -> OTU -> Alignments ------> Refined a
 ##### 1.1 Weight
 
 * Between [0,1] for each catalog. 0 for impossible. 0.5 for missing.
-* For each Value within one catalog, score each by [0,10] scores, and divide by number of tags to normalize. Default score is 5 for 0.5.
-* Multiply them up.
+* For each Value within one catalog, score each by [0,10] scores, ~~and divide by number of tags to normalize. Default score is 5 for 0.5~~ and log() it.
+* ~~Multiply them up.~~ Sum up and Divided by the count of catalogs, and change to log2 based so that 50% will be `-1`.
 
 #### 2. Reference Dedup & Index
 

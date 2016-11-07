@@ -51,7 +51,7 @@ for my $catalog (@{$myConfig->{']'}}) {
 			my ($taxid,$value,$name) = @$rv2;
 			if (exists $myConfig->{$catalog}->{$value}) {
 				if (exists $Result{$taxid}) {
-					$Result{$taxid}->[0] += $myConfig->{$catalog}->{$value} -5;
+					$Result{$taxid}->[0] += log($myConfig->{$catalog}->{$value});
 					#warn "$Result{$taxid}->[1]\t$name\n" if $Result{$taxid}->[1] ne $name;
 				} else {
 					$Result{$taxid} = [0,$name];
@@ -67,8 +67,13 @@ $dbh->rollback;
 $dbh->disconnect;
 
 open O,'>',$outfile or die "Error opening $outfile: $!\n";
-print O join("\t",qw{#TaxID Score Name}),"\n";
+do {
+	no warnings 'qw';
+	print O join("\t",qw{#TaxID log2score Name}),"\n";
+};
+my $log2 = log(2);
 for my $taxid (sort {$a <=> $b} keys %Result) {
+	$Result{$taxid}->[0] /= $log2 * scalar(@{$myConfig->{']'}});
 	print O join("\t",$taxid,@{$Result{$taxid}}),"\n";
 }
 close O;

@@ -62,7 +62,7 @@ for my $catalog (@{$myConfig->{']'}}) {
 		}
 		#ddx \%Result;
 	} else { warn "Not supported yet.\n" }
-	print STDERR "\b\b\b\b.\n";
+	print STDERR "\b\b\b\b.   \n";
 }
 $dbh->rollback;
 $dbh->disconnect;

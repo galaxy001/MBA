@@ -33,4 +33,31 @@ if ( -f $inifile ) {
 	$myConfig->read($inifile);
 } else {die "[x] Chosen INI not found ! [$inifile]\n";}
 
-ddx $myConfig;
+#ddx $myConfig;
+my $sth = $dbh->prepare( "SELECT cid,Type FROM ColData WHERE colname = ?" );
+my $sth2 = $dbh->prepare( "SELECT DISTINCT a.thevalue,b.thevalue FROM RawData AS a INNER JOIN RawData AS b on a.eid = b.eid WHERE a.colname = 'NCBI Taxon ID' and b.colname = ?" );
+
+my %Result;
+for my $catalog (@{$myConfig->{']'}}) {
+	print $catalog,"\n";
+	$sth->execute($catalog);
+	my $rv=$sth->fetchall_arrayref;
+	my ($cid,$type) = @{$rv->[0]};
+	die if scalar @$rv != 1;
+	if ($type == 0) {
+		$sth2->execute($catalog);
+		while (my $rv2 = $sth2->fetchrow_arrayref) {
+			#ddx $rv2;
+			my ($taxid,$value) = @$rv2;
+			if (exists $myConfig->{$catalog}->{$value}) {
+				$Result{$taxid} += $myConfig->{$catalog}->{$value} -5;
+			} else {
+				warn ".\n";
+			}
+			ddx \%Result;
+		}
+	} else { warn "Not supported yet.\n" }
+}
+
+$dbh->rollback;
+$dbh->disconnect;

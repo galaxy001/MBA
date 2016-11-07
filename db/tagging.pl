@@ -52,7 +52,7 @@ for my $catalog (@{$myConfig->{']'}}) {
 			if (exists $myConfig->{$catalog}->{$value}) {
 				if (exists $Result{$taxid}) {
 					$Result{$taxid}->[1] += $myConfig->{$catalog}->{$value} -5;
-					warn "$Result{$taxid}->[0]\t$name\n" if $Result{$taxid}->[0] ne $name;
+					#warn "$Result{$taxid}->[0]\t$name\n" if $Result{$taxid}->[0] ne $name;
 				} else {
 					$Result{$taxid} = [$name,0];
 				}
@@ -60,9 +60,15 @@ for my $catalog (@{$myConfig->{']'}}) {
 				warn ".\n";
 			}
 		}
-		ddx \%Result;
+		#ddx \%Result;
 	} else { warn "Not supported yet.\n" }
 }
-
 $dbh->rollback;
 $dbh->disconnect;
+
+open O,'>',$outfile or die "Error opening $outfile: $!\n";
+print O join("\t",qw{TaxID Score Name}),"\n";
+for my $taxid (sort {$a <=> $b} keys %Result) {
+	print O join("\t",$taxid,@{$Result{$taxid}}),"\n";
+}
+close O;

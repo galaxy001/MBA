@@ -39,7 +39,7 @@ my $sth2 = $dbh->prepare( "SELECT DISTINCT a.thevalue,b.thevalue,c.thevalue FROM
 
 my (%Result);
 for my $catalog (@{$myConfig->{']'}}) {
-	print $catalog,"\n";
+	print STDERR "> $catalog ...";
 	$sth->execute($catalog);
 	my $rv=$sth->fetchall_arrayref;
 	my ($cid,$type) = @{$rv->[0]};
@@ -51,17 +51,18 @@ for my $catalog (@{$myConfig->{']'}}) {
 			my ($taxid,$value,$name) = @$rv2;
 			if (exists $myConfig->{$catalog}->{$value}) {
 				if (exists $Result{$taxid}) {
-					$Result{$taxid}->[0] += log($myConfig->{$catalog}->{$value});
+					$Result{$taxid}->[0] += log($myConfig->{$catalog}->{$value} /10);
 					#warn "$Result{$taxid}->[1]\t$name\n" if $Result{$taxid}->[1] ne $name;
 				} else {
 					$Result{$taxid} = [0,$name];
 				}
 			} else {
-				warn ".\n";
+				print STDERR "x";
 			}
 		}
 		#ddx \%Result;
 	} else { warn "Not supported yet.\n" }
+	print STDERR "\b\b\b\b.\n";
 }
 $dbh->rollback;
 $dbh->disconnect;

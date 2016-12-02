@@ -3,13 +3,14 @@ use strict;
 use warnings;
 use Data::Dump qw(ddx);
 use File::Fetch;
+use Digest::MD5;
 
 my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/';
-my @Lists = qw( archaea fungi protozoa);	# bacteria archaea fungi protozoa
+my @Lists = qw(bacteria archaea fungi protozoa);	# bacteria archaea fungi protozoa
 my $URLsuffix = '/assembly_summary.txt';
 
 #$File::Fetch::USER_AGENT = '';
-my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/';
+my $dbURLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/';
 mkdir './list';
 my (%pDat,%sDat);
 
@@ -32,13 +33,13 @@ for my $group (@Lists) {
 			rename './list/assembly_summary.txt',$Target;
 		}
 	}
-	open L,'<',$Target;
+	open L,'<',$Target or die $!;
 	while (<L>) {
 		next if /^#/;
 		my @d = split /\t/;
 		next if $d[11] ne 'Complete Genome';
 		#ddx \@d;
-		$d[19] =~ s/^${URLprefix}//;
+		$d[19] =~ s/^${dbURLprefix}//;
 		#print join("\t",@d[5,6,7,19]),"\n";
 		# 566037	566037	Saccharomycetaceae sp. 'Ashbya aceri'	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/412/225/GCA_000412225.2_ASM41222v2
 		$pDat{$d[5]} = [@d[7,19]];
@@ -46,6 +47,42 @@ for my $group (@Lists) {
 			$sDat{$d[6]} = [@d[7,19]];	# Well, show me the memory.
 		}
 	}
+	close L;
+}
+my $RefpCount = scalar keys %pDat;
+my $RefsCount = scalar keys %sDat;
+
+warn "[!]Genomes Found:[$RefpCount]+$RefsCount.\n";
+
+unless (-d './all/') {
+	mkdir 'all',0755;
 }
 
-ddx \%pDat;
+for my $taxid (keys %pDat) {
+	my ($name,$gpath) = @{$pDat{$taxid}};
+	open M,'<',"$gpath/md5checksums.txt" or die "Error opening '$gpath/md5checksums.txt': $!";
+	my (%FileMD5,$fmd5,$file);
+	while (<M>) {
+		($fmd5,$file) = split /\t/;
+		next unless $file =~ /_genomic.fna.gz$/;
+		$FileMD5{$file} = $fmd5;
+	}
+	if (scalar keys %FileMD5 > 0) {
+		my $filename = "$gpath/$file";
+		if (-f $filename) {
+			open (my $fh, '<', $filename) or die "Can't open '$filename': $!";
+			binmode($fh);
+			my $md5 = Digest::MD5->new;
+			$md5->addfile($fh);
+			close($fh);
+			print $md5->hexdigest, "/$fmd5 => $filename\n";
+		} else {
+			mkdir $gpath,0755;
+			my $URLfull = $dbURLprefix . $gpath . $file;
+		}
+	}
+}
+
+
+# all -> /share/newdata/database/ftp.ncbi.nih.gov/genomes/all
+#ddx \%pDat;

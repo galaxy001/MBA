@@ -9,8 +9,9 @@ my @Lists = qw( archaea fungi protozoa);	# bacteria archaea fungi protozoa
 my $URLsuffix = '/assembly_summary.txt';
 
 #$File::Fetch::USER_AGENT = '';
+my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/all/';
 mkdir './list';
-my %Dat;
+my (%pDat,%sDat);
 
 for my $group (@Lists) {
 	my $Error = 0;
@@ -37,6 +38,14 @@ for my $group (@Lists) {
 		my @d = split /\t/;
 		next if $d[11] ne 'Complete Genome';
 		#ddx \@d;
-		print join("\t",@d[5,6,7,19]),"\n";
+		$d[19] =~ s/^${URLprefix}//;
+		#print join("\t",@d[5,6,7,19]),"\n";
+		# 566037	566037	Saccharomycetaceae sp. 'Ashbya aceri'	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/412/225/GCA_000412225.2_ASM41222v2
+		$pDat{$d[5]} = [@d[7,19]];
+		if ($d[5] != $d[6]) {
+			$sDat{$d[6]} = [@d[7,19]];	# Well, show me the memory.
+		}
 	}
 }
+
+ddx \%pDat;

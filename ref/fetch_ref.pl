@@ -4,6 +4,8 @@ use warnings;
 use Data::Dump qw(ddx);
 use File::Fetch;
 use Digest::MD5;
+use File::Basename;
+use File::Path qw(mkpath);
 
 my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/';
 my @Lists = qw(bacteria archaea fungi protozoa);	# bacteria archaea fungi protozoa
@@ -14,11 +16,33 @@ my $dbURLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/';
 mkdir './list';
 my (%pDat,%sDat);
 
+sub checkorfetch ($$$) {
+	my ($file,$url,$verbose) = @_;
+	if (-f $file) {
+		if ($verbose) {
+			warn "[$file] already exists, skip downloading.\n";
+		}
+		return 0;
+	} else {
+		my $dirname = dirname($file);
+		my @created = mkpath($dirname, 0, 0755);
+		my $ff = File::Fetch->new(uri => $url);
+		my $fcache;
+		my $where = $ff->fetch( to => $dirname ) or die "[x]Cannot download [$url]: $ff->error\n",$verbose?"Please manually download it to [$file].\n":'';
+		return 1;
+	}
+}
+
 for my $group (@Lists) {
 	my $Error = 0;
 	my $URLfull = $URLprefix . $group . $URLsuffix;
 	print "[$URLfull]\n";
 	my $Target = "./list/$group.txt";
+	my $ret = checkorfetch($Target,$URLfull,1);
+	if ($ret == 1) {
+		rename './list/assembly_summary.txt',$Target;
+	}
+=pod
 	if (-f $Target) {
 		warn "[$Target] already exists, skip downloading.\n";
 	} else {
@@ -33,6 +57,7 @@ for my $group (@Lists) {
 			rename './list/assembly_summary.txt',$Target;
 		}
 	}
+=cut
 	open L,'<',$Target or die $!;
 	while (<L>) {
 		next if /^#/;
@@ -60,10 +85,13 @@ unless (-d './all/') {
 
 for my $taxid (keys %pDat) {
 	my ($name,$gpath) = @{$pDat{$taxid}};
+	my $file = "$gpath/md5checksums.txt";
+	my $url = "${dbURLprefix}${file}";
+	checkorfetch($file,$url,0);
 	open M,'<',"$gpath/md5checksums.txt" or die "Error opening '$gpath/md5checksums.txt': $!";
 	my (%FileMD5,$fmd5,$file);
 	while (<M>) {
-		($fmd5,$file) = split /\t/;
+		($fmd5,$file) = split /\s+/;
 		next unless $file =~ /_genomic.fna.gz$/;
 		$FileMD5{$file} = $fmd5;
 	}

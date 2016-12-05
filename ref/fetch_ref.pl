@@ -26,6 +26,7 @@ sub checkorfetch ($$$) {
 	} else {
 		my $dirname = dirname($file);
 		my @created = mkpath($dirname, 0, 0755);
+		$url = "${dbURLprefix}${file}" if $url eq '';
 		my $ff = File::Fetch->new(uri => $url);
 		my $fcache;
 		my $where = $ff->fetch( to => $dirname ) or die "[x]Cannot download [$url]: $ff->error\n",$verbose?"Please manually download it to [$file].\n":'';
@@ -85,28 +86,33 @@ unless (-d './all/') {
 
 for my $taxid (keys %pDat) {
 	my ($name,$gpath) = @{$pDat{$taxid}};
+	my $basename = basename($gpath);
+print "[$name,$gpath,$basename]\n";
 	my $file = "$gpath/md5checksums.txt";
-	my $url = "${dbURLprefix}${file}";
-	checkorfetch($file,$url,0);
+	#my $url = "${dbURLprefix}${file}";
+	checkorfetch($file,'',0);
 	open M,'<',"$gpath/md5checksums.txt" or die "Error opening '$gpath/md5checksums.txt': $!";
 	my (%FileMD5,$fmd5,$file);
 	while (<M>) {
 		($fmd5,$file) = split /\s+/;
-		next unless $file =~ /_genomic.fna.gz$/;
-		$FileMD5{$file} = $fmd5;
+		#if ($file =~ /((${basename}_genomic.fna.gz)|(${basename}_cds_from_genomic.fna.gz)|(${basename}_feature_table.txt.gz))$/) {
+		if ($file =~ /(${basename}_genomic.fna.gz)$/) {
+			$FileMD5{$file} = $fmd5;
+		}
 	}
+	close M;
+	ddx \%FileMD5;
 	if (scalar keys %FileMD5 > 0) {
-		my $filename = "$gpath/$file";
-		if (-f $filename) {
+		for my $fn (keys %FileMD5) {
+			$fmd5 = $FileMD5{$fn};
+			my $filename = "$gpath/$fn";
+			checkorfetch($filename,'',0);
 			open (my $fh, '<', $filename) or die "Can't open '$filename': $!";
 			binmode($fh);
 			my $md5 = Digest::MD5->new;
 			$md5->addfile($fh);
 			close($fh);
 			print $md5->hexdigest, "/$fmd5 => $filename\n";
-		} else {
-			mkdir $gpath,0755;
-			my $URLfull = $dbURLprefix . $gpath . $file;
 		}
 	}
 }

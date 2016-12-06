@@ -7,7 +7,8 @@ use Digest::MD5;
 use File::Basename;
 use File::Path qw(mkpath);
 
-my $DEBUG = 1;
+my $DEBUG = 0;
+my $MaxGenomeCnt = 1000;
 
 die "$0 [tagged.lst] [out.fa.gz]\n" if @ARGV <0;
 my $infile = shift;
@@ -32,7 +33,7 @@ my $URLsuffix = '/assembly_summary.txt';
 #$File::Fetch::USER_AGENT = '';
 my $dbURLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/';
 mkdir './list';
-my (%aDat);
+my (%aDat,%ScoreLevels);
 
 sub checkorfetch ($$$) {
 	my ($file,$url,$verbose) = @_;
@@ -46,8 +47,10 @@ sub checkorfetch ($$$) {
 		my @created = mkpath($dirname, 0, 0755);
 		$url = "${dbURLprefix}${file}" if $url eq '';
 		my $ff = File::Fetch->new(uri => $url);
+		print STDERR '…';
 		my $fcache;
 		my $where = $ff->fetch( to => $dirname ) or die "[x]Cannot download [$url]: $ff->error\n",$verbose?"Please manually download it to [$file].\n":'';
+		print STDERR "\b";
 		return 1;
 	}
 }
@@ -78,14 +81,39 @@ for my $group (@Lists) {
 	close L;
 }
 my $RefaCount = scalar keys %aDat;
+my $RefaScored = 0;
 
-warn "[!]Genomes Found:[$RefaCount].\n";
+for my $tid (keys %TaxScores) {
+	if (exists $aDat{$tid}) {
+		++$ScoreLevels{$TaxScores{$tid}};
+		++$RefaScored;
+	}
+}
+my @ScoreL = sort {$b <=> $a} keys %ScoreLevels;
+#ddx \%ScoreLevels;
+#print "@ScoreL\n";
+my ($tCnt,$minScore) = (0,$ScoreL[0]);
+if ($ScoreLevels{$ScoreL[0]} > $MaxGenomeCnt) {
+	die "[x]Top level species Count [$ScoreLevels{$ScoreL[0]}] > $MaxGenomeCnt, Please re-score.\n"
+}
+for my $score (@ScoreL) {
+	$tCnt += $ScoreLevels{$score};
+	if ($tCnt > $MaxGenomeCnt) {
+		$tCnt -= $ScoreLevels{$score};
+		last;
+	}
+	$minScore = $score;
+}
+warn "[!]Genomes Found:[$RefaCount], Scored[$RefaScored]. Log2(MinScore):[$minScore] for [$tCnt] species.\n\n";
 
 unless (-d './all/') {
 	mkdir 'all',0755;
 }
 
-for my $taxid (keys %aDat) {
+my $cCnt = 0;
+warn "[!]Checking Genome files:\n";
+for my $taxid (sort keys %aDat) {
+	next unless exists $TaxScores{$taxid};
 	my ($name,$gpath) = @{$aDat{$taxid}};
 	my $basename = basename($gpath);
 #print "[$name,$gpath,$basename]\n";
@@ -109,17 +137,22 @@ for my $taxid (keys %aDat) {
 			$fmd5 = $FileMD5{$fn};
 			my $filename = "$gpath/$fn";
 			checkorfetch($filename,'',0);
-			open (my $fh, '<', $filename) or die "Can't open '$filename': $!";
-			binmode($fh);
-			my $md5 = Digest::MD5->new;
-			$md5->addfile($fh);
-			close($fh);
-			my $Cmd5 = $md5->hexdigest;
-			if ($fmd5 eq $Cmd5) {
-				print "✅  $filename: $fmd5.  💮\n";
-			} else {
-				print "❌  $filename: $Cmd5 ≠ $fmd5.\n";
+			++$cCnt;
+			if ($DEBUG) {
+				print STDERR "\n";
+				open (my $fh, '<', $filename) or die "Can't open '$filename': $!";
+				binmode($fh);
+				my $md5 = Digest::MD5->new;
+				$md5->addfile($fh);
+				close($fh);
+				my $Cmd5 = $md5->hexdigest;
+				if ($fmd5 eq $Cmd5) {
+					print "✅  $filename: $fmd5 💮\n";
+				} else {
+					print "❌  $filename: $Cmd5 ≠ $fmd5\n";
+				}
 			}
+			print STDERR ":\t$cCnt / $tCnt\r";
 		}
 	}
 }

@@ -23,7 +23,7 @@ while (<L>) {
 	$TaxScores{$t[0]} = $t[1];
 }
 close L;
-ddx \%TaxScores;
+#ddx \%TaxScores;
 
 my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/';
 my @Lists = qw(bacteria archaea fungi protozoa);	# bacteria archaea fungi protozoa
@@ -32,7 +32,7 @@ my $URLsuffix = '/assembly_summary.txt';
 #$File::Fetch::USER_AGENT = '';
 my $dbURLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/';
 mkdir './list';
-my (%pDat,%sDat);
+my (%aDat);
 
 sub checkorfetch ($$$) {
 	my ($file,$url,$verbose) = @_;
@@ -55,28 +55,12 @@ sub checkorfetch ($$$) {
 for my $group (@Lists) {
 	my $Error = 0;
 	my $URLfull = $URLprefix . $group . $URLsuffix;
-	print "[$URLfull]\n";
+	#print "[$URLfull]\n";
 	my $Target = "./list/$group.txt";
 	my $ret = checkorfetch($Target,$URLfull,1);
 	if ($ret == 1) {
 		rename './list/assembly_summary.txt',$Target;
 	}
-=pod
-	if (-f $Target) {
-		warn "[$Target] already exists, skip downloading.\n";
-	} else {
-		my $ff = File::Fetch->new(uri => $URLfull);
-		my $fcache;
-		my $where = $ff->fetch( to => './list' ) or $Error = 1;
-		#ddx $ff; #ddx $where;
-		if ($Error) {
-			warn $ff->error;
-			warn "Please manually download [$URLfull] to [$Target].\n";
-		} else {
-			rename './list/assembly_summary.txt',$Target;
-		}
-	}
-=cut
 	open L,'<',$Target or die $!;
 	while (<L>) {
 		next if /^#/;
@@ -86,24 +70,23 @@ for my $group (@Lists) {
 		$d[19] =~ s/^${dbURLprefix}//;
 		#print join("\t",@d[5,6,7,19]),"\n";
 		# 566037	566037	Saccharomycetaceae sp. 'Ashbya aceri'	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/412/225/GCA_000412225.2_ASM41222v2
-		$pDat{$d[5]} = [@d[7,19]];
-		if ($d[5] != $d[6]) {
-			$sDat{$d[6]} = [@d[7,19]];	# Well, show me the memory.
-		}
+		$aDat{$d[6]} = [@d[7,19]] unless exists $aDat{$d[6]};
+		$aDat{$d[5]} = [@d[7,19]];	# 看上去 taxid 更精确（？），假设出现两次也没关系。
+	    #taxid: ncbi taxid of the taxon (internal if > 10000000)
+	    #species_taxid: corresponding species taxid
 	}
 	close L;
 }
-my $RefpCount = scalar keys %pDat;
-my $RefsCount = scalar keys %sDat;
+my $RefaCount = scalar keys %aDat;
 
-warn "[!]Genomes Found:[$RefpCount]+$RefsCount.\n";
+warn "[!]Genomes Found:[$RefaCount].\n";
 
 unless (-d './all/') {
 	mkdir 'all',0755;
 }
 
-for my $taxid (keys %pDat) {
-	my ($name,$gpath) = @{$pDat{$taxid}};
+for my $taxid (keys %aDat) {
+	my ($name,$gpath) = @{$aDat{$taxid}};
 	my $basename = basename($gpath);
 #print "[$name,$gpath,$basename]\n";
 	my $file = "$gpath/md5checksums.txt";
@@ -133,7 +116,7 @@ for my $taxid (keys %pDat) {
 			close($fh);
 			my $Cmd5 = $md5->hexdigest;
 			if ($fmd5 eq $Cmd5) {
-				print "✅  $filename: $fmd5\n";
+				print "✅  $filename: $fmd5.  💮\n";
 			} else {
 				print "❌  $filename: $Cmd5 ≠ $fmd5.\n";
 			}

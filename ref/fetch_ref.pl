@@ -7,6 +7,24 @@ use Digest::MD5;
 use File::Basename;
 use File::Path qw(mkpath);
 
+my $DEBUG = 1;
+
+die "$0 [tagged.lst] [out.fa.gz]\n" if @ARGV <0;
+my $infile = shift;
+$infile = 'tagged.lst' unless defined $infile;
+my $outfile = shift;
+$outfile = 'ref.fa.gz' unless defined $outfile;
+
+my %TaxScores;
+open L,'<',$infile or die "Error opening $infile: $!\n";
+while (<L>) {
+	next if /^#/;
+	my @t = split /\t/;
+	$TaxScores{$t[0]} = $t[1];
+}
+close L;
+ddx \%TaxScores;
+
 my $URLprefix = 'ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/';
 my @Lists = qw(bacteria archaea fungi protozoa);	# bacteria archaea fungi protozoa
 my $URLsuffix = '/assembly_summary.txt';
@@ -87,23 +105,24 @@ unless (-d './all/') {
 for my $taxid (keys %pDat) {
 	my ($name,$gpath) = @{$pDat{$taxid}};
 	my $basename = basename($gpath);
-print "[$name,$gpath,$basename]\n";
+#print "[$name,$gpath,$basename]\n";
 	my $file = "$gpath/md5checksums.txt";
 	#my $url = "${dbURLprefix}${file}";
 	checkorfetch($file,'',0);
 	open M,'<',"$gpath/md5checksums.txt" or die "Error opening '$gpath/md5checksums.txt': $!";
-	my (%FileMD5,$fmd5,$file);
+	my (%FileMD5,$fmd5,$mfile);
 	while (<M>) {
-		($fmd5,$file) = split /\s+/;
+		($fmd5,$mfile) = split /\s+/;
 		#if ($file =~ /((${basename}_genomic.fna.gz)|(${basename}_cds_from_genomic.fna.gz)|(${basename}_feature_table.txt.gz))$/) {
-		if ($file =~ /(${basename}_genomic.fna.gz)$/) {
-			$FileMD5{$file} = $fmd5;
+		if ($mfile =~ /(${basename}_genomic.fna.gz)$/) {
+			$FileMD5{$mfile} = $fmd5;
 		}
 	}
 	close M;
-	ddx \%FileMD5;
-	if (scalar keys %FileMD5 > 0) {
-		for my $fn (keys %FileMD5) {
+#ddx \%FileMD5;
+	my @FMkeys = sort keys %FileMD5;
+	if (scalar @FMkeys > 0) {
+		for my $fn (@FMkeys) {
 			$fmd5 = $FileMD5{$fn};
 			my $filename = "$gpath/$fn";
 			checkorfetch($filename,'',0);
@@ -112,7 +131,12 @@ print "[$name,$gpath,$basename]\n";
 			my $md5 = Digest::MD5->new;
 			$md5->addfile($fh);
 			close($fh);
-			print $md5->hexdigest, "/$fmd5 => $filename\n";
+			my $Cmd5 = $md5->hexdigest;
+			if ($fmd5 eq $Cmd5) {
+				print "✅  $filename: $fmd5\n";
+			} else {
+				print "❌  $filename: $Cmd5 ≠ $fmd5.\n";
+			}
 		}
 	}
 }

@@ -7,7 +7,7 @@ use Digest::MD5;
 use File::Basename;
 use File::Path qw(mkpath);
 
-my $DEBUG = 0;
+my $DEBUG = 1;
 my $MaxGenomeCnt = 1000;
 
 die "$0 [tagged.lst] [out.fa.gz]\n" if @ARGV <0;
@@ -112,6 +112,7 @@ unless (-d './all/') {
 
 my $cCnt = 0;
 warn "[!]Checking Genome files:\n";
+open(O,"|-","gzip -9 > $outfile") or die "Error opening $outfile: $!\n";
 for my $taxid (sort keys %aDat) {
 	next unless exists $TaxScores{$taxid};
 	my ($name,$gpath) = @{$aDat{$taxid}};
@@ -153,10 +154,22 @@ for my $taxid (sort keys %aDat) {
 				}
 			}
 			print STDERR ":\t$cCnt / $tCnt\r";
+			open( G,"-|","gzip -dc $filename") or die "Error opening $filename: $!\n";
+			while (<G>) {
+				if (/^>/) {
+					chomp;
+					my $t = "$_\tScore:$TaxScores{$taxid},Tax:$taxid\n";
+					#print "\n$t\n";
+					print O $t;
+				} else {
+					print O $_;
+				}
+			}
+			close G;
 		}
 	}
 }
-
+close O;
 
 # all -> /share/newdata/database/ftp.ncbi.nih.gov/genomes/all
 #ddx \%pDat;

@@ -13,7 +13,7 @@ use MYINI;
 use DBI;
 use Data::Dump qw(ddx);
 
-die "$0 [jgi.db] [chosen.ini] [tagged.lst]\n" if @ARGV <0;
+die "$0 [jgi.db] [chosen.ini] [tagged.lst]\n" if @ARGV <1;
 my $dbfile = shift;
 $dbfile = 'jgi.db' unless defined $dbfile;
 my $inifile = shift;

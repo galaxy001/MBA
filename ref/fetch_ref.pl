@@ -7,10 +7,10 @@ use Digest::MD5;
 use File::Basename;
 use File::Path qw(mkpath);
 
-my $DEBUG = 1;
+my $DEBUG = 0;
 my $MaxGenomeCnt = 1000;
 
-die "$0 [tagged.lst] [out.fa.gz]\n" if @ARGV <0;
+die "$0 [tagged.lst] [out.fa.gz]\n" if @ARGV <1;
 my $infile = shift;
 $infile = 'tagged.lst' unless defined $infile;
 my $outfile = shift;

@@ -13,7 +13,7 @@ __IMG/M @ JGI__ by _Crawing_.
  * If we want to include genomes other than NCBI Taxon set from [JGI](http://genome.jgi.doe.gov/), we can fetch with sth. like `curl` follow its [API](http://genome.jgi.doe.gov/help/download.jsf). 
 
 ````bash
-curl 'https://signon.jgi.doe.gov/signon/create' --data-urlencode 'login=USER_NAME' --data-urlencode 'password=USER_PASSWORD' -c cookies > /dev/null
+curl 'https://signon-old.jgi.doe.gov/signon/create' --data-urlencode 'login=USER_NAME' --data-urlencode 'password=USER_PASSWORD' -c cookies > /dev/null
 curl 'http://genome.jgi.doe.gov/ext-api/downloads/get-directory?organism=PhytozomeV10' -b cookies > files.xml
 curl 'http://genome.jgi.doe.gov/ext-api/downloads/get_tape_file?blocking=true&url=/PhytozomeV10/download/_JAMO/53112a9e49607a1be0055980/Alyrata_107_v1.0.annotation_info.txt' -b cookies > Alyrata_107_v1.0.annotation_info.txt
 ````
